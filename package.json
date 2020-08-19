@@ -1,16 +1,20 @@
 {
   "name": "vue-material-vuelidate",
-  "version": "0.1.0",
+  "version": "0.1.6",
   "description": "A Vue Material adapter for Vuelidate",
   "keywords": [
     "vue",
     "material",
     "component",
     "vuelidate",
-    "dialog"
+    "validation"
   ],
   "author": "F. Kasper <fkasper@modus-operandi.at>",
   "license": "MIT",
+  "main": "dist/components.ssr.js",
+  "module": "dist/components.esm.js",
+  "unpkg": "dist/components.min.js",
+  "style": "dist/components.css",
   "repository": {
     "type": "git",
     "url": "https://github.com/undecaf/vue-material-vuelidate"
@@ -18,7 +22,6 @@
   "files": [
     "dist/*"
   ],
-  "basename": "components",
   "scripts": {
     "prebuild": "rm -rf dist/",
     "build": "NODE_ENV=production rollup --config rollup.config.js",
