@@ -5,7 +5,7 @@
     v-bind="$attrs"
     :class="{ 'md-invalid': model.$error }"
     v-on="$listeners"
-    @focusout.native="model.$touch()"
+    @focusout.native="touch()"
   >
     <slot />
     <span
@@ -21,6 +21,11 @@
 <script>
 import Vue from 'vue'
 import MdVuelidatedMsg from './md-vuelidated-msg.vue'
+
+// focusout events will not trigger validation
+// within this period of time after this component
+// and all its children have been mounted
+const focusoutDelay = 50
 
 export default {
     name: 'MdVuelidated',
@@ -53,11 +58,30 @@ export default {
         },
     },
 
+    data() {
+        return {
+            touchStart: Infinity,
+        }
+    },
+
     computed: {
         activeMessages() {
             return Object.keys(Object(this.messages))
                 .filter(constraint => !this.model[constraint])
                 .map(constraint => this.messages[constraint])
+        },
+    },
+
+    mounted() {
+        // Wait until children have been mounted
+        this.$nextTick(() => this.touchStart = Date.now() + focusoutDelay)
+    },
+
+    methods: {
+        touch() {
+            if(Date.now() >= this.touchStart) {
+                this.model.$touch()
+            }
         },
     },
 }

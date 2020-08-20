@@ -49,7 +49,7 @@ describe('<md-vuelidated>', () => {
 
     async function verifyInvalid(value, constraint) {
         input.setValue(value)
-        await input.trigger('blur')
+        await input.trigger('blur')     // validate <md-chips>, <md-datepicker>
         await input.trigger('focusout')
         expect(field.classes()).to.include('md-invalid')
         error = field.get('.md-error')
@@ -58,8 +58,14 @@ describe('<md-vuelidated>', () => {
 
     async function verifyValid(value) {
         input.setValue(value)
-        await input.trigger('blur')
+        await input.trigger('blur')     // validate <md-chips>, <md-datepicker>
         await input.trigger('focusout')
+        expect(field.classes()).not.to.include('md-invalid')
+    }
+
+    async function verifyValidDate(value) {
+        input.setValue(value)
+        await delay(100)  // let mdDatepicker debounce the input
         expect(field.classes()).not.to.include('md-invalid')
     }
 
@@ -97,10 +103,10 @@ describe('<md-vuelidated>', () => {
     it('validates <md-field> and renders messages', async () => {
         get('#text')
 
-        // Not invalid yet since focus has never been lost
+        // Not invalid yet since the focus has never been lost
         expect(field.classes()).not.to.include('md-invalid')
 
-        await verifyInvalid("", 'required')
+        await verifyInvalid('', 'required')
         await verifyInvalid('x', 'minLength')
         await verifyValid('xyz')
     })
@@ -114,10 +120,10 @@ describe('<md-vuelidated>', () => {
     it('validates <md-autocomplete> and renders messages', async () => {
         get('#autocomplete')
 
-        // Not invalid yet since focus has never been lost
+        // Not invalid yet since the focus has never been lost
         expect(field.classes()).not.to.include('md-invalid')
 
-        await verifyInvalid("", 'required')
+        await verifyInvalid('', 'required')
         await verifyValid('a')
     })
 
@@ -130,12 +136,22 @@ describe('<md-vuelidated>', () => {
     it('validates <md-chips> and renders messages', async () => {
         get('#chips')
 
-        // Not invalid yet since focus has never been lost
+        // Not invalid yet since the focus has never been lost
         expect(field.classes()).not.to.include('md-invalid')
 
-        await verifyInvalid("", 'required')
+        // Wait until focusout events are honored
+        await delay(100)
+
+        await verifyInvalid('', 'required')
         await verifyInvalid('a', 'minLength')
         await verifyValid('b')
+    })
+
+    it('ignores early focusout events on <md-chips>', async () => {
+        get('#chips')
+
+        // Not invalid since focusout events are still ignored
+        await verifyValid('')
     })
 
     it('renders <md-datepicker>', () => {
@@ -147,14 +163,22 @@ describe('<md-vuelidated>', () => {
     it('validates <md-datepicker> and renders messages', async () => {
         get('#datepicker')
 
-        // Not invalid yet since focus has never been lost
+        // Not invalid yet since the focus has never been lost
         expect(field.classes()).not.to.include('md-invalid')
 
-        await verifyInvalid("", 'required')
+        // Wait until focusout events are honored
+        await delay(100)
+
+        await verifyInvalid('', 'required')
         await verifyInvalid('x', 'required')
+        await verifyValidDate(new Date().toLocaleDateString(navigator.language))
+    })
 
-        input.setValue(new Date().toLocaleDateString(navigator.language))
-        await delay(100)  // let mdDatepicker debounce the input
-        expect(field.classes()).not.to.include('md-invalid')
+    it('ignores early focusout events on <md-datepicker>', async () => {
+        get('#datepicker')
+
+        // Not invalid since focusout events are still ignored
+        await verifyValidDate('')
+        await verifyValidDate('x')
     })
 })
