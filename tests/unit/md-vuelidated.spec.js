@@ -63,7 +63,7 @@ describe('<md-vuelidated>', () => {
         expect(field.classes()).not.to.include('md-invalid')
     }
 
-    function timeout(ms) {
+    function delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
@@ -154,7 +154,7 @@ describe('<md-vuelidated>', () => {
         await verifyInvalid('x', 'required')
 
         input.setValue(new Date().toLocaleDateString(navigator.language))
-        await timeout(100)  // let mdDatepicker debounce the input
+        await delay(100)  // let mdDatepicker debounce the input
         expect(field.classes()).not.to.include('md-invalid')
     })
 })

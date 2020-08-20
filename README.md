@@ -13,9 +13,9 @@ using Vuelidate together with [Vue Material](https://vuematerial.io/):
 +   Can be used with `MdField`, `MdAutocomplete`, `MdChips` and `MdDatepicker`
 
 
-## Usage
+## Installation
 
-### Installation
+As a package:
 
 ```shell script
 $ npm install vue-material-vuelidate
@@ -23,6 +23,14 @@ $ npm install vue-material-vuelidate
 $ yarn add vue-material-vuelidate
 ```
 
+Included as `<script>`:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/vue-material-vuelidate/dist/components.min.js"></script>
+```
+
+
+## Usage
 
 ### Registering the components
 
@@ -39,13 +47,13 @@ Vue.use(MdVuelidated)
 ### Validating Vue Material form fields
 
 In order to validate
-[`<md-field>`](https://vuematerial.io/components/input),
+[`<md-field>`](https://vuematerial.io/components/input) (any type of `<input>`),
 [`<md-autocomplete>`](https://vuematerial.io/components/autocomplete),
 [`<md-chips>`](https://vuematerial.io/components/chips) or
 [`<md-datepicker>`](https://vuematerial.io/components/datepicker):
 
 +   Replace that tag with `<md-vuelidated>`.
-+   Pass the desired tag name as property `field`.
++   Pass the desired Vue Material tag name as property `field`.
 +   Express constraints in the `validations` object of your component in the usual way.
 +   Bind property `model` to the respective `validations` member, e.g. `$v.input`.
 +   What to use as `v-model` for the input depends on the input component, see the examples
@@ -102,13 +110,13 @@ Validating a date:
 ```
 
 
-### Displaying validation messages
+### Providing validation messages
 
 Validation messages can be specified in two ways (both methods can be combined):
 
 1.  As the `messages` property of `<md-vuelidated>`.
-    This property must be bound to an object containing the message for each constraint,
-    e.g. `:messages="{ required: 'This field is required' }"`.
+    This property must be bound to an object containing the message for each Vuelidate
+    constraint, e.g. `:messages="{ required: 'This field is required' }"`.
     
     These messages appear below the corresponding input field.
 

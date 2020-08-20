@@ -1,23 +1,30 @@
-import * as components from './index'
+import * as artifacts from './index'
 
-// Install function executed by Vue.use()
-export function install(Vue) {
+// Install function for GlobalVue.use() below
+export default function install(Vue) {
     if (!install.installed) {
-        for (const name in components) {
-            if (name !== 'default') {
-                Vue.component(name, components[name])
+        // Install whatever is installable
+        for (const name in artifacts) {
+            const artifact = artifacts[name]
+            if (typeof artifact.install === 'function') {
+                try {
+                    artifact.install(Vue)
+                } catch(ex) {
+                    console.error(`Could not install '${name}'`, ex)
+                }
             }
         }
+
         install.installed = true
     }
 }
 
-// Auto-install if Vue is found (eg. in browsers via <script> tag)
+// Auto-install if Vue was found (e.g. in browsers via <script> tag)
 let GlobalVue
 
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
     GlobalVue = window.Vue
-} else if (typeof global !== "undefined") {
+} else if (typeof global !== 'undefined') {
     GlobalVue = global.Vue
 }
 
