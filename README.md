@@ -1,5 +1,11 @@
 # A Vue Material adapter for Vuelidate
 
+![Minified size](https://badgen.net/bundlephobia/min/vue-material-vuelidate)
+![Open issues](https://badgen.net/github/open-issues/undecaf/vue-material-vuelidate)
+![Dependents](https://badgen.net/npm/dependents/vue-material-vuelidate)
+![Total downloads](https://badgen.net/npm/dt/vue-material-vuelidate)
+![License](https://badgen.net/npm/license/vue-material-vuelidate)
+
 
 [Vuelidate](https://vuelidate.js.org/) is a model-based validation for Vue.js
 that decouples validations nicely from the template.
@@ -15,7 +21,7 @@ using Vuelidate together with [Vue Material](https://vuematerial.io/):
 
 ## Installation
 
-As a package:
+As a module:
 
 ```shell script
 $ npm install vue-material-vuelidate
@@ -26,6 +32,7 @@ $ yarn add vue-material-vuelidate
 Included as `<script>`:
 
 ```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-material-vuelidate/dist/components.css">
 <script src="https://cdn.jsdelivr.net/npm/vue-material-vuelidate/dist/components.min.js"></script>
 ```
 
@@ -123,10 +130,8 @@ Validation messages can be specified in two ways (both methods can be combined):
 1.  As `<md-vuelidated-msg>` tags, either inside `<md-vuelidated>` or somewhere else.
     The Vuelidate constraint must be bound to property `constraint`, see the examples below.
     
-    If placed inside `<md-vuelidated>` then these messages appear below the corresponding
-    input field.  
-    If placed outside `<md-vuelidated>` then they appear only if their container
-    has the CSS-class `md-invalid`.
+    Messages placed inside `<md-vuelidated>` appear below the corresponding input field.  
+    Messages outside `<md-vuelidated>` are visible only if their container has CSS-class `md-invalid`.
 
 
 #### Examples

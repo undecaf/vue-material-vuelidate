@@ -6,6 +6,7 @@ Vue.config.devtools = false
 
 window.Vue = Vue
 import('@/../dist/components.min')
+import('@/../dist/components.css')
 
 
 describe('<md-vuelidated> (Browser)', () => {
