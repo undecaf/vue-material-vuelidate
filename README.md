@@ -2,7 +2,6 @@
 
 ![Minified size](https://badgen.net/bundlephobia/min/vue-material-vuelidate)
 ![Open issues](https://badgen.net/github/open-issues/undecaf/vue-material-vuelidate)
-![Dependents](https://badgen.net/npm/dependents/vue-material-vuelidate)
 ![Total downloads](https://badgen.net/npm/dt/vue-material-vuelidate)
 ![License](https://badgen.net/npm/license/vue-material-vuelidate)
 
@@ -44,7 +43,6 @@ Included as `<script>`:
 ```javascript 1.8
 import MdVuelidated from 'vue-material-vuelidated'
 import 'vue-material-vuelidated/dist/components.css'
-
     ...
 // This must come after Vue.use(VueMaterial) and Vue.use(Vuelidate):
 Vue.use(MdVuelidated)
@@ -127,7 +125,7 @@ Validation messages can be specified in two ways (both methods can be combined):
     
     These messages appear below the corresponding input field.
 
-1.  As `<md-vuelidated-msg>` tags, either inside `<md-vuelidated>` or somewhere else.
+1.  As `<md-vuelidated-msg>` elements, either inside `<md-vuelidated>` or somewhere else.
     The Vuelidate constraint must be bound to property `constraint`, see the examples below.
     
     Messages placed inside `<md-vuelidated>` appear below the corresponding input field.  
@@ -178,4 +176,6 @@ Combining both methods:
 
 ## License
 
-[MIT](http://opensource.org/licenses/MIT)
+Software: [MIT](http://opensource.org/licenses/MIT)
+
+Documentation: [CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)

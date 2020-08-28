@@ -28,7 +28,8 @@
     "serve": "vue-cli-service serve",
     "lint": "eslint '{src,tests}/**/*.{js,vue}'",
     "lint:fix": "npm run lint -- --fix",
-    "test:unit": "karma start"
+    "test:unit": "karma start",
+    "test:e2e": "testcafe"
   },
   "dependencies": {},
   "devDependencies": {
@@ -54,7 +55,6 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.2",
     "mocha": "^8.1.1",
-    "npm-check-updates": "^7.0.2",
     "rimraf": "^3.0.2",
     "rollup": "^2.6.1",
     "rollup-plugin-css-only": "^2.1.0",

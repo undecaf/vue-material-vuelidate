@@ -26,6 +26,11 @@ const
 
 
 const baseConfig = {
+    output: {
+        name,
+        exports: 'named',
+        sourcemap: true,
+    },
     plugins: {
         preVue: [
             replace({
@@ -46,21 +51,22 @@ const baseConfig = {
                     dangerousForOf: true,
                 },
             }),
-        ],
-        license: license({
-            sourcemap: true,
-            banner: {
-                content:    `${pkg.name} v${pkg.version}
+            resolve(),
+            license({
+                sourcemap: true,
+                banner: {
+                    content:    `${pkg.name} v${pkg.version}
                             ${pkg.description}
                             Built ${moment().format('YYYY-MM-DD HH:mm:ss')}
                             (c) 2020-present Ferdinand Kasper
                             Released under the MIT license`,
-                commentStyle: 'ignored',
-            },
-            thirdParty: {
-                allow: 'MIT',
-            },
-        }),
+                    commentStyle: 'ignored',
+                },
+                thirdParty: {
+                    allow: 'MIT',
+                },
+            }),
+        ],
     },
 }
 
@@ -73,10 +79,9 @@ if (!argv.format || argv.format === 'es') {
         ...baseConfig,
         input: `${src}/index.js`,
         output: {
+            ...baseConfig.output,
             file: pkg.module,
             format: 'esm',
-            exports: 'named',
-            sourcemap: true,
         },
         plugins: [
             ...baseConfig.plugins.preVue,
@@ -93,8 +98,6 @@ if (!argv.format || argv.format === 'es') {
                     ecma: 6,
                 },
             }),
-            resolve(),
-            baseConfig.plugins.license,
         ],
     }
 
@@ -107,12 +110,10 @@ if (!argv.format || argv.format === 'cjs') {
         ...baseConfig,
         input: `${src}/index.js`,
         output: {
+            ...baseConfig.output,
             compact: true,
             file: pkg.main,
             format: 'cjs',
-            name,
-            exports: 'named',
-            sourcemap: true,
         },
         plugins: [
             ...baseConfig.plugins.preVue,
@@ -128,8 +129,6 @@ if (!argv.format || argv.format === 'cjs') {
                 css: false,
             }),
             ...baseConfig.plugins.postVue,
-            resolve(),
-            baseConfig.plugins.license,
         ],
     }
 
@@ -142,12 +141,10 @@ if (!argv.format || argv.format === 'iife') {
         ...baseConfig,
         input: `${src}/wrapper.js`,
         output: {
+            ...baseConfig.output,
             compact: true,
             file: pkg.unpkg,
             format: 'iife',
-            name,
-            exports: 'named',
-            sourcemap: true,
         },
         plugins: [
             ...baseConfig.plugins.preVue,
@@ -158,8 +155,6 @@ if (!argv.format || argv.format === 'iife') {
                     ecma: 5,
                 },
             }),
-            resolve(),
-            baseConfig.plugins.license,
         ],
     }
 
