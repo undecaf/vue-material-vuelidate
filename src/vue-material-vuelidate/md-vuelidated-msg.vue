@@ -13,6 +13,7 @@ export default {
 
     inject: [
         'validation',
+        'expression',
     ],
 
     props: {
@@ -20,6 +21,16 @@ export default {
             type: String,
             required: true,
         },
+    },
+
+    mounted() {
+        if (!this.validation) {
+            throw new Error('<md-vuelidated-msg> must be placed inside <md-vuelidated>')
+        }
+
+        if (typeof this.validation[this.constraint] === 'undefined') {
+            throw new Error(`Vuelidate constraint '${this.constraint}' for '${this.expression}' not found`)
+        }
     },
 }
 </script>

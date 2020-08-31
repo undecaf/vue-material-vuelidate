@@ -74,38 +74,41 @@ Please consider relaxing the policy to allow unsafe-eval.`)
 
     computed: {
         model() {
-            const patterns = {
-                'md-field': /(MdInput|MdTextarea|MdSelect)$/,
-            }
+            // Find a nested VNode with a v-model, or presume this VNode has one
+            const vnode = (this.$slots.default && this.$slots.default.find(vn => vn.data && vn.data.model))
+                || this.$vnode
 
-            let vnode, context, expr
-
-            // Get the validation context from a child VNode
-            try {
-                vnode = this.$slots.default.find(vn => vn.tag.match(patterns[this.field] || /.*/))
-                context = vnode.context
-            } catch (e) {
-                throw (e instanceof TypeError)
-                    ? new Error('<md-vuelidated> requires at least one child element')
-                    : e
-            }
-
-            // Get the v-model expression from the VNode, or from this component if not available at the VNode
+            // Use the v-model expression to get the validation object
             if (vnode.data && vnode.data.model) {
-                expr = vnode.data.model.expression
-            } else {
-                try {
-                    expr = this.$vnode.data.model.expression
-                } catch (e) {
-                    throw (e instanceof TypeError)
-                        ? new Error(`No v-model directive found in <md-vuelidate field="${this.field}">`)
-                        : e
-                }
-            }
+                const
+                    context = this.$vnode.context,
+                    expression = vnode.data.model.expression
 
-            return {
-                validation: new Function(`with(this) return $v.${expr}`).call(vnode.context),
-                getValue: new Function(`with(this) return ${expr}`).bind(vnode.context),
+                if (typeof this.$vnode.key === 'undefined') {
+                    // Not repeated by v-for, straightforward
+                    var modelExpr = validationExpr = expression
+
+                } else {
+                    // Repeated by v-for, ugly
+                    const
+                        key = JSON.stringify(this.$vnode.key),
+                        subscript = /\[[^\[]*\]([^\[]*)$/     // rightmost subscript
+
+                    // Have to fiddle with the expression since the name of the index variable is not known
+                    var
+                        modelExpr = expression.replace(subscript, `[${key}]$1`),
+                        validationExpr = expression.replace(subscript, `.$each[${key}]$1`)
+
+                }
+                // TODO If v-model is an array or object and if key exists and if $each exists => collection
+                return {
+                    expression,
+                    validation: new Function(`with(this) return $v.${validationExpr}`).call(context),
+                    getValue: new Function(`with(this) return ${modelExpr}`).bind(context),
+                }
+
+            } else {
+                throw new Error(`No v-model directive found for <md-vuelidate field="${this.field}">`)
             }
         },
 
@@ -148,7 +151,8 @@ Please consider relaxing the policy to allow unsafe-eval.`)
 
     provide() {
         return {
-            validation: this.model.validation
+            validation: this.model.validation,
+            expression: this.model.expression,
         }
     },
 }

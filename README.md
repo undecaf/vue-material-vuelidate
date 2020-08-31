@@ -5,6 +5,9 @@
 ![Total downloads](https://badgen.net/npm/dt/vue-material-vuelidate)
 ![License](https://badgen.net/npm/license/vue-material-vuelidate)
 
++   [Data nesting](https://vuelidate.js.org/#sub-data-nesting)
++   [Collections validation](https://vuelidate.js.org/#sub-collections-validation)
++   [DRY principle](https://deviq.com/don-t-repeat-yourself/)
 
 [Vuelidate](https://vuelidate.js.org/) is a model-based validation for Vue.js
 that decouples validations nicely from the template.

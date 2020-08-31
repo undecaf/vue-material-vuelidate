@@ -24,7 +24,7 @@
                              :messages="{ fourLetter: 'Sorry, cannot register four-letter names' }"
               >
                 <label>Name</label>
-                <md-input type="text" v-model.trim="name" required></md-input>
+                <md-input type="text" v-model.trim="name" required />
                 <md-vuelidated-msg constraint="required">Please enter your name</md-vuelidated-msg>
               </md-vuelidated>
 
@@ -65,7 +65,7 @@
                   }"
               >
                 <label>Email</label>
-                <md-input type="email" v-model.trim="www.email" required></md-input>
+                <md-input type="email" v-model.trim="www.email" required />
               </md-vuelidated>
             </div>
 
@@ -104,7 +104,7 @@
                   }"
               >
                 <label>Your coolness: {{ coolness }}</label>
-                <md-input type="range" min="1" max="6" v-model="coolness"></md-input>
+                <md-input type="range" min="1" max="6" v-model="coolness" />
               </md-vuelidated>
             </div>
 
@@ -115,14 +115,23 @@
                 :messages="{ url: 'Invalid URL' }"
               >
                 <label>Homepage</label>
-                <md-input type="url" v-model.trim="www.home"></md-input>
+                <md-input type="url" v-model.trim="www.home" />
+              </md-vuelidated>
+            </div>
+
+            <div class="md-layout md-gutter">
+              <md-vuelidated class="md-layout-item" v-for="(_, index) in creditCards" :key="index">
+                <label>Credit card #{{ index+1 }}</label>
+                <md-input type="text" v-model="creditCards[index].number" :required="!index" />
+                <md-vuelidated-msg constraint="requiredIf">Some credit card is required</md-vuelidated-msg>
+                <md-vuelidated-msg constraint="creditCard">Invalid for a credit card</md-vuelidated-msg>
               </md-vuelidated>
             </div>
 
             <div class="md-layout md-gutter">
               <md-vuelidated class="md-layout-item">
                 <label>Passphrase</label>
-                <md-input type="password" v-model.trim="pass" required></md-input>
+                <md-input type="password" v-model.trim="pass" required />
                 <md-vuelidated-msg constraint="required">Please enter a passphrase</md-vuelidated-msg>
                 <md-vuelidated-msg constraint="strength">At least {{ $v.pass.$params.strength.min }} characters are required</md-vuelidated-msg>
               </md-vuelidated>
@@ -132,7 +141,7 @@
                 :messages="{ verified: 'The passphrases do not match' }"
               >
                 <label>Repeat passphrase</label>
-                <md-input type="password" v-model.trim="pass2" required></md-input>
+                <md-input type="password" v-model.trim="pass2" required />
               </md-vuelidated>
             </div>
           </form>
@@ -150,7 +159,9 @@
 <script>
 import { required, requiredIf, requiredUnless, minLength, maxLength, minValue, maxValue, between, alpha, alphaNum, numeric, integer, decimal, email, ipAddress, macAddress, sameAs, url, or, and, not, helpers } from "vuelidate/lib/validators"
 
-const minAge = 6
+const
+    minAge = 6,
+    creditCard = helpers.regex('creditCard', /[\d -]+/)     // simplified for testing
 
 export default {
     name: 'Test',
@@ -168,6 +179,11 @@ export default {
             dateOfBirth: null,
             minAge,
             coolness: 1,
+            creditCards: [
+                { number: null },
+                { number: null },
+                { number: null },
+            ],
             pass: null,
             pass2: null,
 
@@ -192,6 +208,16 @@ export default {
         },
         dateOfBirth: { age: maxValue(new Date(Date.now() - minAge*365.25*86400*1000)) },
         coolness: { required, between: between(1, 5) },
+        creditCards: {
+            $each: {
+                number: {
+                    requiredIf: function(model) {
+                        return this.creditCards.some(cc => cc.number)
+                    },
+                    creditCard,
+                },
+            },
+        },
         pass: { required, strength: minLength(5) },
         pass2: { required, verified: sameAs("pass") },
     },
