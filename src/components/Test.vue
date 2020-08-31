@@ -12,7 +12,7 @@
 
     <md-app-content>
       <md-dialog :md-active="true">
-        <md-dialog-title>Indiscreet registration</md-dialog-title>
+        <md-dialog-title>Nosy registration form</md-dialog-title>
 
         <md-dialog-content>
           <p>Required*</p>
@@ -21,16 +21,18 @@
             <div class="md-layout md-gutter">
               <md-vuelidated field="md-field"
                              class="md-layout-item"
-                             :model="$v.name">
+                             :messages="{ fourLetter: 'Sorry, cannot register four-letter names' }"
+              >
                 <label>Name</label>
-                <md-input type="text" v-model.trim="$v.name.$model" required></md-input>
-                <md-vuelidated-msg :constraint="$v.name.required">Please enter your name</md-vuelidated-msg>
+                <md-input type="text" v-model.trim="name" required></md-input>
+                <md-vuelidated-msg constraint="required">Please enter your name</md-vuelidated-msg>
               </md-vuelidated>
 
               <md-vuelidated
                 field="md-field"
                 class="md-layout-item md-size-50"
-                :model="$v.title" :messages="{ maxLength: `No more that ${$v.title.$params.maxLength.max} titles, please`}">
+                :messages="{ maxLength: `More that ${$v.title.$params.maxLength.max} titles cause server overload`}"
+              >
                 <label>Title</label>
                 <md-select v-model.trim="title" multiple md-dense>
                   <md-option value="M.A.">M.A.</md-option>
@@ -48,21 +50,22 @@
                 class="md-layout-item md-size-50"
                 :md-options="countries"
                 md-dense
-                :model="$v.country"
-                :messages="{ required: 'Choose your country' }">
+                v-model="country"
+                :messages="{ required: 'Choose your country' }"
+              >
                 <label>Country</label>
               </md-vuelidated>
 
               <md-vuelidated
                 field="md-field"
                 class="md-layout-item"
-                :model="$v.email"
                 :messages="{
                       required: 'Yor email address is required',
                       email: 'Invalid email address'
-                  }">
+                  }"
+              >
                 <label>Email</label>
-                <md-input type="email" v-model.trim="$v.email.$model" required></md-input>
+                <md-input type="email" v-model.trim="www.email" required></md-input>
               </md-vuelidated>
             </div>
 
@@ -72,11 +75,12 @@
                 class="md-layout-item"
                 md-placeholder="Social media used*"
                 :md-auto-insert="true"
-                :model="$v.media"
+                v-model="www.media"
                 :messages="{
-                      minLength: `State at least ${$v.media.$params.minLength.min} social media`
-                  }">
-                <md-vuelidated-msg :constraint="$v.media.required">Please state which social media your are using</md-vuelidated-msg>
+                      minLength: `State at least ${$v.www.media.$params.minLength.min} social media`
+                  }"
+              >
+                <md-vuelidated-msg constraint="required">Please state which social media your are using</md-vuelidated-msg>
               </md-vuelidated>
             </div>
 
@@ -84,22 +88,23 @@
               <md-vuelidated
                 field="md-datepicker"
                 class="md-layout-item md-size-50"
-                :model="$v.dateOfBirth"
+                v-model="dateOfBirth"
                 md-immediately
-                :md-open-on-focus="false">
+                :md-open-on-focus="false"
+              >
                 <label>Date of birth</label>
-                <md-vuelidated-msg :constraint="$v.dateOfBirth.alter">You are not even 6 years old!</md-vuelidated-msg>
+                <md-vuelidated-msg constraint="age">You are not even {{ minAge }} years old!</md-vuelidated-msg>
               </md-vuelidated>
 
               <md-vuelidated
                 field="md-field"
                 class="md-layout-item"
-                :model="$v.coolness"
                 :messages="{
                       between: `Mere mortals cannot be cooler than ${$v.coolness.$params.between.max}`
-                  }">
-                <label>My coolness: {{ coolness }}</label>
-                <md-input type="range" min="1" max="6" v-model="$v.coolness.$model"></md-input>
+                  }"
+              >
+                <label>Your coolness: {{ coolness }}</label>
+                <md-input type="range" min="1" max="6" v-model="coolness"></md-input>
               </md-vuelidated>
             </div>
 
@@ -107,29 +112,27 @@
               <md-vuelidated
                 field="md-field"
                 class="md-layout-item"
-                :model="$v.home"
-                :messages="{ url: 'Invalid URL' }">
+                :messages="{ url: 'Invalid URL' }"
+              >
                 <label>Homepage</label>
-                <md-input type="url" v-model.trim="$v.home.$model"></md-input>
+                <md-input type="url" v-model.trim="www.home"></md-input>
               </md-vuelidated>
             </div>
 
             <div class="md-layout md-gutter">
-              <md-vuelidated
-                class="md-layout-item"
-                :model="$v.pass">
+              <md-vuelidated class="md-layout-item">
                 <label>Passphrase</label>
-                <md-input type="password" v-model.trim="$v.pass.$model" required></md-input>
-                <md-vuelidated-msg :constraint="$v.pass.required">Please enter a passphrase</md-vuelidated-msg>
-                <md-vuelidated-msg :constraint="$v.pass.strength">At least {{ $v.pass.$params.strength.min }} characters are required</md-vuelidated-msg>
+                <md-input type="password" v-model.trim="pass" required></md-input>
+                <md-vuelidated-msg constraint="required">Please enter a passphrase</md-vuelidated-msg>
+                <md-vuelidated-msg constraint="strength">At least {{ $v.pass.$params.strength.min }} characters are required</md-vuelidated-msg>
               </md-vuelidated>
 
               <md-vuelidated
                 class="md-layout-item"
-                :model="$v.pass2"
-                :messages="{ verified: 'The passphrases do not match' }">
+                :messages="{ verified: 'The passphrases do not match' }"
+              >
                 <label>Repeat passphrase</label>
-                <md-input type="password" v-model.trim="$v.pass2.$model" required></md-input>
+                <md-input type="password" v-model.trim="pass2" required></md-input>
               </md-vuelidated>
             </div>
           </form>
@@ -147,6 +150,8 @@
 <script>
 import { required, requiredIf, requiredUnless, minLength, maxLength, minValue, maxValue, between, alpha, alphaNum, numeric, integer, decimal, email, ipAddress, macAddress, sameAs, url, or, and, not, helpers } from "vuelidate/lib/validators"
 
+const minAge = 6
+
 export default {
     name: 'Test',
 
@@ -155,12 +160,14 @@ export default {
             title: [],
             name: null,
             country: null,
-            email: null,
-            media: [],
+            www: {
+                email: null,
+                media: [],
+                home: null,
+            },
             dateOfBirth: null,
-            minAge: 6,
+            minAge,
             coolness: 1,
-            home: null,
             pass: null,
             pass2: null,
 
@@ -175,14 +182,16 @@ export default {
     },
 
     validations: {
+        name: { required, fourLetter: name => !name || (name.length !== 4) },
         title: { maxLength: maxLength(3) },
-        name: { required },
         country: { required },
-        email: { required, email },
-        media: { required, minLength: minLength(2) },
-        dateOfBirth: { alter: maxValue(new Date(Date.now() - 6*365.25*86400*1000)) },
+        www: {
+            email: { required, email },
+            media: { required, minLength: minLength(2) },
+            home: { url },
+        },
+        dateOfBirth: { age: maxValue(new Date(Date.now() - minAge*365.25*86400*1000)) },
         coolness: { required, between: between(1, 5) },
-        home: { url },
         pass: { required, strength: minLength(5) },
         pass2: { required, verified: sameAs("pass") },
     },

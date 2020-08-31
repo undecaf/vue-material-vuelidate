@@ -1,7 +1,6 @@
 import Vue from "vue"
 import VueMaterial from 'vue-material'
 import Vuelidate from 'vuelidate'
-// import MdVuelidated from 'vue-material-vuelidated'
 // import MdVuelidated from '@/../dist/components.esm'
 import MdVuelidated from '@/vue-material-vuelidate/md-vuelidated'
 import Test from '@/components/Test.vue'

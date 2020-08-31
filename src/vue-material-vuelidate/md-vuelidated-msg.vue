@@ -1,6 +1,6 @@
 <template>
   <span
-    v-if="!constraint"
+    v-if="!validation[constraint]"
     class="md-error"
   >
     <slot />
@@ -8,14 +8,16 @@
 </template>
 
 <script>
-import Vue from "vue"
-
 export default {
     name: "MdVuelidatedMsg",
 
+    inject: [
+        'validation',
+    ],
+
     props: {
         constraint: {
-            type: Boolean,
+            type: String,
             required: true,
         },
     },
