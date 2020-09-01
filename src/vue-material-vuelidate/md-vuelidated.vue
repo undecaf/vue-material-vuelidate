@@ -86,7 +86,7 @@ Please consider relaxing the policy to allow unsafe-eval.`)
 
                 if (typeof this.$vnode.key === 'undefined') {
                     // Not repeated by v-for, straightforward
-                    var modelExpr = validationExpr = expression
+                    var valueExpr = validationExpr = expression
 
                 } else {
                     // Repeated by v-for, ugly
@@ -96,6 +96,7 @@ Please consider relaxing the policy to allow unsafe-eval.`)
                     // If there is only one subscript then replace it;
                     // else if there is an [index] subscript then replace it; otherwise replace the
                     // rightmost subscript.
+                    // This fails for expressions like 'data[myIndex][0]'; use 'index' in v-for in such cases.
                     const
                         single = /\[.+?\]/g,                  // for counting subscripts
                         index = /\[\s*index\s*\]/,            // finds [index]
@@ -103,17 +104,17 @@ Please consider relaxing the policy to allow unsafe-eval.`)
 
                     if ((expression.match(single) || []).length === 1) {
                         var
-                            modelExpr = expression.replace(rightmost, `[${key}]$1`),
+                            valueExpr = expression.replace(rightmost, `[${key}]$1`),
                             validationExpr = expression.replace(rightmost, `.$each[${key}]$1`)
 
                     } else if (expression.match(index)) {
                         var
-                            modelExpr = expression.replace(index, `[${key}]`),
+                            valueExpr = expression.replace(index, `[${key}]`),
                             validationExpr = expression.replace(index, `.$each[${key}]`)
 
                     } else {
                         var
-                            modelExpr = expression.replace(rightmost, `[${key}]$1`),
+                            valueExpr = expression.replace(rightmost, `[${key}]$1`),
                             validationExpr = expression.replace(rightmost, `.$each[${key}]$1`)
                     }
                 }
@@ -121,7 +122,7 @@ Please consider relaxing the policy to allow unsafe-eval.`)
                 return {
                     expression,
                     validation: new Function(`with(this) return $v.${validationExpr}`).call(context),
-                    getValue: new Function(`with(this) return ${modelExpr}`).bind(context),
+                    getValue: new Function(`with(this) return ${valueExpr}`).bind(context),
                 }
 
             } else {
@@ -131,7 +132,7 @@ Please consider relaxing the policy to allow unsafe-eval.`)
 
         activeMessages() {
             return Object.keys(Object(this.messages))
-                .filter(constraint => !this.model.validation[constraint])
+                .filter(constraint => this.model.validation[constraint] === false && this.model.validation.$anyDirty)
                 .map(constraint => this.messages[constraint])
         },
     },
@@ -168,8 +169,10 @@ Please consider relaxing the policy to allow unsafe-eval.`)
 
     provide() {
         return {
-            validation: this.model.validation,
-            expression: this.model.expression,
+            mdVuelidated: {
+                validation: this.model.validation,
+                expression: this.model.expression,
+            }
         }
     },
 }

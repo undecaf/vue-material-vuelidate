@@ -1,9 +1,9 @@
 <template>
   <span
-    v-if="!validation[constraint]"
+    v-if="!valid"
     class="md-error"
   >
-    <slot />
+    <slot v-bind="params" />
   </span>
 </template>
 
@@ -11,10 +11,12 @@
 export default {
     name: "MdVuelidatedMsg",
 
-    inject: [
-        'validation',
-        'expression',
-    ],
+    inject: {
+        mdVuelidated: {
+            from: 'mdVuelidated',
+            default: null,
+        }
+    },
 
     props: {
         constraint: {
@@ -23,14 +25,55 @@ export default {
         },
     },
 
-    mounted() {
-        if (!this.validation) {
-            throw new Error('<md-vuelidated-msg> must be placed inside <md-vuelidated>')
-        }
+    computed: {
+        innerConstraint() {
+            if (typeof this.mdVuelidated.validation[this.constraint] !== 'boolean') {
+                throw new Error(`Vuelidate constraint not found: $v.${this.mdVuelidated.expression}.${this.constraint}`)
+            }
 
-        if (typeof this.validation[this.constraint] === 'undefined') {
-            throw new Error(`Vuelidate constraint '${this.constraint}' for '${this.expression}' not found`)
-        }
+            return {
+                isValid: () => this.mdVuelidated.validation[this.constraint] || !this.mdVuelidated.validation.$anyDirty,
+                getParams: () => this.mdVuelidated.validation.$params[this.constraint]
+            }
+        },
+
+        outerConstraint() {
+            const
+                context = this.$vnode.context,
+                parts = this.constraint.match(/^(.*\.)?([^.]+)$/)
+
+            if (!parts) {
+                throw new Error(`Invalid Vuelidate constraint format: ${this.constraint}`)
+            }
+
+            const
+                path = parts[1],
+                name = parts[2],
+                getConstraint = new Function(`return this.$v.${this.constraint}`).bind(context),
+                isValid = new Function(`return arguments[0]() || !this.$v.${path}$anyDirty`).bind(context, getConstraint),
+                getParams = new Function(`return this.$v.${path}$params.${name}`).bind(context)
+
+            if (typeof getConstraint() !== 'boolean') {
+                throw new Error(`Vuelidate constraint not found: $v.${this.constraint}`)
+            }
+
+            return {
+                isValid,
+                getParams,
+            }
+        },
+
+        effectiveConstraint() {
+            return this.mdVuelidated ? this.innerConstraint : this.outerConstraint
+        },
+
+        valid() {
+            return this.effectiveConstraint.isValid()
+        },
+
+        params() {
+            return this.effectiveConstraint.getParams()
+        },
     },
 }
 </script>

@@ -73,14 +73,14 @@
               <md-vuelidated
                 field="md-chips"
                 class="md-layout-item"
-                md-placeholder="Social media used*"
+                md-placeholder="Hobbies*"
                 :md-auto-insert="true"
-                v-model="www.media"
+                v-model="hobbies"
                 :messages="{
-                      minLength: `State at least ${$v.www.media.$params.minLength.min} social media`
+                      required: 'Please tell us about your hobbies'
                   }"
               >
-                <md-vuelidated-msg constraint="required">Please state which social media your are using</md-vuelidated-msg>
+                <md-vuelidated-msg constraint="minLength" v-slot="{ min }">You should have at least {{ min }} hobbies</md-vuelidated-msg>
               </md-vuelidated>
             </div>
 
@@ -123,10 +123,17 @@
               <md-vuelidated class="md-layout-item" v-for="(_, index) in creditCards" :key="index">
                 <label>Credit card #{{ index+1 }}</label>
                 <md-input type="text" v-model="creditCards[index].number" />
-                <md-vuelidated-msg constraint="requiredIf">Some credit card is required</md-vuelidated-msg>
                 <md-vuelidated-msg constraint="creditCard">Invalid for a credit card</md-vuelidated-msg>
               </md-vuelidated>
             </div>
+
+            <md-vuelidated-msg
+              class="md-layout md-gutter md-caption"
+              constraint="creditCards.minCount"
+              v-slot="{ min }"
+            >
+              Please specify at least {{ min }} credit card(s)
+            </md-vuelidated-msg>
 
             <div class="md-layout md-gutter">
               <md-vuelidated class="md-layout-item">
@@ -148,8 +155,8 @@
         </md-dialog-content>
 
         <md-dialog-actions>
-          <md-button class="md-raised" @click="reset">Cancel</md-button>
-          <md-button class="md-raised md-primary" :disabled="$v.$invalid" @click="submit">Register</md-button>
+          <md-button class="md-raised" @click="reset">Reset</md-button>
+          <md-button class="md-raised md-primary" :disabled="$v.$invalid" @click="submit">Register now!</md-button>
         </md-dialog-actions>
       </md-dialog>
     </md-app-content>
@@ -161,7 +168,8 @@ import { required, requiredIf, requiredUnless, minLength, maxLength, minValue, m
 
 const
     minAge = 6,
-    creditCard = helpers.regex('creditCard', /[\d -]+/)     // simplified for testing
+    creditCard = helpers.regex('creditCard', /[\d -]+/),     // simplified for testing
+    minCount = min => helpers.withParams({ type: 'minCount', min }, creditCards => creditCards.filter(cc => cc.number).length >= min)
 
 export default {
     name: 'Test',
@@ -173,9 +181,9 @@ export default {
             country: null,
             www: {
                 email: null,
-                media: [],
                 home: null,
             },
+            hobbies: [],
             dateOfBirth: null,
             minAge,
             coolness: 1,
@@ -203,19 +211,15 @@ export default {
         country: { required },
         www: {
             email: { required, email },
-            media: { required, minLength: minLength(2) },
             home: { url },
         },
+        hobbies: { required, minLength: minLength(2) },
         dateOfBirth: { age: maxValue(new Date(Date.now() - minAge*365.25*86400*1000)) },
         coolness: { required, between: between(1, 5) },
         creditCards: {
+            minCount: minCount(2),
             $each: {
-                number: {
-                    requiredIf: function(model) {
-                        return this.creditCards.some(cc => cc.number)
-                    },
-                    creditCard,
-                },
+                number: { creditCard },
             },
         },
         pass: { required, strength: minLength(5) },
@@ -226,9 +230,11 @@ export default {
         reset() {
             this.$refs.form.reset()
             this.title = []
-            this.media = []
-            this.coolness = 1
-            this.$nextTick(() => this.$nextTick(this.$v.$reset))
+            this.hobbies = []
+            this.$nextTick(() => this.$nextTick(() => {
+                this.$v.$reset()
+                this.coolness = 1
+            }))
         },
 
         submit() {
@@ -240,7 +246,8 @@ export default {
 
 
 <style scoped>
-.md-menu-content {
-    z-index: 100;
+.md-error.md-caption {
+  color: #ff1744;
 }
+
 </style>
