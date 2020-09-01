@@ -122,7 +122,7 @@
             <div class="md-layout md-gutter">
               <md-vuelidated class="md-layout-item" v-for="(_, index) in creditCards" :key="index">
                 <label>Credit card #{{ index+1 }}</label>
-                <md-input type="text" v-model="creditCards[index].number" :required="!index" />
+                <md-input type="text" v-model="creditCards[index].number" />
                 <md-vuelidated-msg constraint="requiredIf">Some credit card is required</md-vuelidated-msg>
                 <md-vuelidated-msg constraint="creditCard">Invalid for a credit card</md-vuelidated-msg>
               </md-vuelidated>

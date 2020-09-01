@@ -90,17 +90,34 @@ Please consider relaxing the policy to allow unsafe-eval.`)
 
                 } else {
                     // Repeated by v-for, ugly
-                    const
-                        key = JSON.stringify(this.$vnode.key),
-                        subscript = /\[[^\[]*\]([^\[]*)$/     // rightmost subscript
+                    const key = JSON.stringify(this.$vnode.key)
 
                     // Have to fiddle with the expression since the name of the index variable is not known
-                    var
-                        modelExpr = expression.replace(subscript, `[${key}]$1`),
-                        validationExpr = expression.replace(subscript, `.$each[${key}]$1`)
+                    // If there is only one subscript then replace it;
+                    // else if there is an [index] subscript then replace it; otherwise replace the
+                    // rightmost subscript.
+                    const
+                        single = /\[.+?\]/g,                  // for counting subscripts
+                        index = /\[\s*index\s*\]/,            // finds [index]
+                        rightmost = /\[[^\[]*\]([^\[]*)$/     // rightmost subscript, trailing text in $1
 
+                    if ((expression.match(single) || []).length === 1) {
+                        var
+                            modelExpr = expression.replace(rightmost, `[${key}]$1`),
+                            validationExpr = expression.replace(rightmost, `.$each[${key}]$1`)
+
+                    } else if (expression.match(index)) {
+                        var
+                            modelExpr = expression.replace(index, `[${key}]`),
+                            validationExpr = expression.replace(index, `.$each[${key}]`)
+
+                    } else {
+                        var
+                            modelExpr = expression.replace(rightmost, `[${key}]$1`),
+                            validationExpr = expression.replace(rightmost, `.$each[${key}]$1`)
+                    }
                 }
-                // TODO If v-model is an array or object and if key exists and if $each exists => collection
+
                 return {
                     expression,
                     validation: new Function(`with(this) return $v.${validationExpr}`).call(context),
