@@ -67,6 +67,7 @@ Please consider relaxing the policy to allow unsafe-eval.`)
 
     data() {
         return {
+            validation: null,
             unwatch: () => {},
             touchStart: Infinity,
         }
@@ -84,45 +85,55 @@ Please consider relaxing the policy to allow unsafe-eval.`)
                     context = this.$vnode.context,
                     expression = vnode.data.model.expression
 
+                let valueExpr, validationExpr
+
                 if (typeof this.$vnode.key === 'undefined') {
                     // Not repeated by v-for, straightforward
-                    var valueExpr = validationExpr = expression
+                    valueExpr = validationExpr = expression
 
                 } else {
-                    // Repeated by v-for, ugly
-                    const key = JSON.stringify(this.$vnode.key)
+                    // Repeated by v-for, gets ugly
 
-                    // Have to fiddle with the expression since the name of the index variable is not known
-                    // If there is only one subscript then replace it;
-                    // else if there is an [index] subscript then replace it; otherwise replace the
-                    // rightmost subscript.
-                    // This fails for expressions like 'data[myIndex][0]'; use 'index' in v-for in such cases.
+                    // Fiddle with the expression since the name of the index variable is not known
+                    // If there are several subscripts one of which is [indexNNN] (N are optional digits)
+                    // then replace that one with the [key] subscript; otherwise replace the rightmost subscript.
+                    // This fails for expressions like 'data[myIndex][0]'; use 'indexNNN' in v-for in such cases.
                     const
+                        key = JSON.stringify(this.$vnode.key),
                         single = /\[.+?\]/g,                  // for counting subscripts
-                        index = /\[\s*index\s*\]/,            // finds [index]
+                        index = /\[\s*index\d*\s*\]/,         // finds [index], [index0], [index1], ...
                         rightmost = /\[[^\[]*\]([^\[]*)$/     // rightmost subscript, trailing text in $1
 
-                    if ((expression.match(single) || []).length === 1) {
-                        var
-                            valueExpr = expression.replace(rightmost, `[${key}]$1`),
-                            validationExpr = expression.replace(rightmost, `.$each[${key}]$1`)
-
-                    } else if (expression.match(index)) {
-                        var
-                            valueExpr = expression.replace(index, `[${key}]`),
-                            validationExpr = expression.replace(index, `.$each[${key}]`)
+                    if ((expression.match(single) || []).length > 1 && expression.match(index)) {
+                        valueExpr = expression.replace(index, `[${key}]`)
+                        validationExpr = expression.replace(index, `.$each.$iter[${key}]`)
 
                     } else {
-                        var
-                            valueExpr = expression.replace(rightmost, `[${key}]$1`),
-                            validationExpr = expression.replace(rightmost, `.$each[${key}]$1`)
+                        valueExpr = expression.replace(rightmost, `[${key}]$1`),
+                        validationExpr = expression.replace(rightmost, `.$each.$iter[${key}]$1`)
+                    }
+                }
+
+                let validation = new Function(`try { with(this) return $v.${validationExpr} } catch(e) {}`).call(context)
+
+                if (validation) {
+                    // Vuelidate removes the validation object even before beforeDestroy(), so save it for later
+                    this.validation = validation
+
+                } else {
+                    // Keep the validation object around until this component instance has been destroyed
+                    if (this.validation) {
+                        validation = this.validation
+
+                    } else {
+                        throw new Error(`No validation object found at: $v.${validationExpr.replace('.$iter', '')}`)
                     }
                 }
 
                 return {
                     expression,
-                    validation: new Function(`with(this) return $v.${validationExpr}`).call(context),
-                    getValue: new Function(`with(this) return ${valueExpr}`).bind(context),
+                    validation,
+                    getValue: new Function(`try { with(this) return ${valueExpr} } catch(e) {}`).bind(context),
                 }
 
             } else {

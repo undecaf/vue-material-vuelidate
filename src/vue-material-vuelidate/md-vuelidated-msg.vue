@@ -28,7 +28,7 @@ export default {
     computed: {
         innerConstraint() {
             if (typeof this.mdVuelidated.validation[this.constraint] !== 'boolean') {
-                throw new Error(`Vuelidate constraint not found: $v.${this.mdVuelidated.expression}.${this.constraint}`)
+                throw new Error(`Constraint not found: $v.${this.mdVuelidated.expression}.${this.constraint}`)
             }
 
             return {
@@ -43,7 +43,7 @@ export default {
                 parts = this.constraint.match(/^(.*\.)?([^.]+)$/)
 
             if (!parts) {
-                throw new Error(`Invalid Vuelidate constraint format: ${this.constraint}`)
+                throw new Error(`Invalid constraint format: ${this.constraint}`)
             }
 
             const
@@ -54,7 +54,7 @@ export default {
                 getParams = new Function(`return this.$v.${path}$params.${name}`).bind(context)
 
             if (typeof getConstraint() !== 'boolean') {
-                throw new Error(`Vuelidate constraint not found: $v.${this.constraint}`)
+                throw new Error(`Constraint not found: $v.${this.constraint}`)
             }
 
             return {
