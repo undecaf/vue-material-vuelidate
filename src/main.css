@@ -12,7 +12,44 @@ body, .md-app {
     height: 100%;
 }
 
-/* Workaround for: MdModalDialog button text may not appear in Webkit browsers */
-.md-dialog-actions .md-ripple {
-    z-index: auto;
+/*
+ * Additional flex classes, inspired by AngularJS Material
+ */
+
+/* Will grow and shrink as needed. Starts with a size of 0%. Same as md-size-0 */
+.md-layout-item.md-flex {
+    flex: 1 1 0%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Will grow and shrink as needed. Starts with a size based on its width and height values. */
+.md-layout-item.md-flex-auto {
+    flex: 1 1 auto;
+    box-sizing: border-box;
+}
+
+/* Will not grow or shrink. Sized based on its width and height values. */
+.md-layout-item.md-flex-none {
+    flex: 0 0 auto;
+    box-sizing: border-box;
+}
+
+/* Will grow and shrink as needed. Starts with a size of 100%. Same as md-size-100. */
+.md-layout-item.md-flex-grow {
+    flex: 1 1 100%;
+    box-sizing: border-box;
+}
+
+/* Will shrink as needed. Starts with a size based on its width and height values. */
+.md-layout-item.md-flex-nogrow,
+.md-layout-item.md-flex-initial {
+    flex: 0 1 auto;
+    box-sizing: border-box;
+}
+
+/* Will grow as needed, but won't shrink. Starts with a size based on its width and height values. */
+.md-layout-item.md-flex-noshrink {
+    flex: 1 0 auto;
+    box-sizing: border-box;
 }

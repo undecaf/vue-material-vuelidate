@@ -30,6 +30,7 @@
     "lint": "eslint '{src,tests}/**/*.{js,vue}'",
     "lint:fix": "npm run lint -- --fix",
     "test:unit": "karma start",
+    "test:unit:debug": "karma start --browsers Chromium --no-single-run",
     "test:e2e": "testcafe"
   },
   "dependencies": {},
