@@ -1,5 +1,5 @@
 {
-  "name": "vue-material-vuelidate",
+  "name": "@undecaf/vue-material-vuelidate",
   "version": "0.2.0",
   "description": "A Vue Material adapter for Vuelidate",
   "keywords": [

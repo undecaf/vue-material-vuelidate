@@ -146,7 +146,7 @@
           </md-vuelidated>
 
           <md-field class="md-layout-item">
-            <label>Add a phone</label>
+            <label>Add a category</label>
             <md-input type="text" v-model="category" />
 
             <md-button
@@ -162,9 +162,9 @@
         <md-vuelidated-msg
           class="md-layout md-caption"
           constraint="phones.minPhones"
-          v-slot="{ min }"
+          v-slot="p"
         >
-          We would like at least {{ min }} of your phone numbers
+          We would like at least {{ p.min }} of your phone numbers
         </md-vuelidated-msg>
 
 
@@ -199,6 +199,13 @@
           v-slot="{ max }"
         >
           {{ max }} credit card numbers would be sufficient, thank you
+        </md-vuelidated-msg>
+
+        <md-vuelidated-msg
+          class="md-layout md-caption"
+          constraint="creditCards.$each[0].number.creditCard"
+        >
+          The first credit card number is invalid
         </md-vuelidated-msg>
 
 
