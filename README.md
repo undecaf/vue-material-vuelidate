@@ -5,6 +5,7 @@
 ![Total downloads](https://badgen.net/npm/dt/vue-material-vuelidate)
 ![License](https://badgen.net/npm/license/vue-material-vuelidate)
 
+##### As of v0.2.0, this repository has moved to [@undecaf/vue-material-vuelidate](https://www.npmjs.com/package/@undecaf/vue-material-vuelidate). Please update your dependencies accordingly. Thank you for using vue-material-vuelidate, and my apologies for the inconvenience!
 
 [Vuelidate](https://vuelidate.js.org/) is a model-based validation for Vue.js
 that decouples validations nicely from the template.
