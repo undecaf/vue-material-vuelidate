@@ -65,16 +65,17 @@ Included as `<script>`:
 <script src="https://cdn.jsdelivr.net/npm/@undecaf/vue-material-vuelidate/dist/components.min.js"></script>
 ```
 
-Please note: this module needs the CSP to allow `unsafe-eval` (same as required
-for the Vue runtime compiler). For reassurance: `eval()` is not used anywhere here!
+<ins>Please note</ins>: this module needs the CSP to allow [`unsafe-eval`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src)
+(same as for the [full Vue build](https://www.fenovice.com/doc/vue/v2/guide/installation.html#CSP-environments)).
+For your reassurance: no `eval()` inside!
 
 ## Usage
 
 ### Registering the components
 
 ```javascript 1.8
-import MdVuelidated from 'vue-material-vuelidated'
-import 'vue-material-vuelidated/dist/components.css'
+import MdVuelidated from '@undecaf/vue-material-vuelidate'
+import '@undecaf/vue-material-vuelidate/dist/components.css'
     ...
 // This must come after Vue.use(VueMaterial) and Vue.use(Vuelidate):
 Vue.use(MdVuelidated)

@@ -322,14 +322,6 @@ export default {
     },
 
     methods: {
-        insertCC(afterIndex) {
-
-        },
-
-        removeCC(index) {
-
-        },
-
         reset() {
             this.$refs.form.reset()
             this.title = []
