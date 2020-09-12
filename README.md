@@ -1,7 +1,8 @@
-# A Vue Material adapter for Vuelidate
+# Using Vuelidate more easily in Vue Material
 
 ![Minified size](https://badgen.net/bundlephobia/min/@undecaf/vue-material-vuelidate)
 ![Open issues](https://badgen.net/github/open-issues/undecaf/vue-material-vuelidate)
+![Vulnerabilities](https://snyk.io/test/npm/@undecaf/vue-material-vuelidate/badge.svg)
 ![Total downloads](https://badgen.net/npm/dt/@undecaf/vue-material-vuelidate)
 ![License](https://badgen.net/github/license/undecaf/vue-material-vuelidate)
 
@@ -24,7 +25,7 @@ For example, an input field like this one ...
 </md-field>
 ```
 
-... can be expressed as:
+... becomes:
 
 ```html
 <md-vuelidated>
@@ -35,6 +36,11 @@ For example, an input field like this one ...
 </md-vuelidated>
 ```
 
+Here is [a more detailed example](https://undecaf.github.io/vue-material-vuelidate/example/)
+([source code](https://github.com/undecaf/vue-material-vuelidate/blob/master/src/components/Demo.vue))
+of how this package can be used.
+
+
 There are more benefits than just concise markup:
 
 +   Works with [`<md-field>`](https://vuematerial.io/components/input) (any type of `<input>`, and `<textarea>`),
@@ -42,7 +48,7 @@ There are more benefits than just concise markup:
     [`<md-chips>`](https://vuematerial.io/components/chips) and
     [`<md-datepicker>`](https://vuematerial.io/components/datepicker)
 +   Suppresses validation messages for fields that have not been touched yet (similar to 
-    Angular Material)
+    [Angular Material](https://material.angular.io/components/input/overview#changing-when-error-messages-are-shown))
 +   Supports Vuelidate [data nesting](https://vuelidate.js.org/#sub-data-nesting),
     [collections validation](https://vuelidate.js.org/#sub-collections-validation) and
     [accessing validator parameters](https://vuelidate.js.org/#sub-accessing-validator-parameters)
@@ -67,11 +73,10 @@ Included as `<script>`:
 
 <ins>Please note</ins>: this module needs the CSP to allow [`unsafe-eval`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src)
 (same as for the [full Vue build](https://www.fenovice.com/doc/vue/v2/guide/installation.html#CSP-environments)).
-For your reassurance: no `eval()` inside!
+For your reassurance: nevertheless, no `eval()` inside!
 
-## Usage
 
-### Registering the components
+## Registering the components
 
 ```javascript 1.8
 import MdVuelidated from '@undecaf/vue-material-vuelidate'
@@ -84,10 +89,10 @@ Vue.use(MdVuelidated)
 This registers `<md-vuelidated>` and `<md-vuelidated-msg>` globally.
 
 
-### Validating Vue Material input elements
+## Validating Vue Material input elements
 
 In order to _validate_ an `<md-field>`, `<md-autocomplete>`, `<md-chips>` or `<md-datepicker>` field
-(see here for [providing validation _messages_](#providing-validation-messages)):
+(see here for [_providing validation messages_](#providing-validation-messages)):
 
 +   Replace that tag with `<md-vuelidated>`.
 +   Pass the replaced tag name as property `field` (defaults to `md-field`).
@@ -95,15 +100,15 @@ In order to _validate_ an `<md-field>`, `<md-autocomplete>`, `<md-chips>` or `<m
     `<md-vuelidated>`.
 +   Express constraints in the `validations` object of your component in the usual way.
 
+The following examples assume that a suitable `validations` object has been defined.
 
-#### Basic usage
 
-All examples assume that a suitable `validations` object has been defined.
+### Basic usage
 
 Validating text:
 
 ```html
-<md-vuelidated field="md-field">    <!-- property 'field' could be omitted here -->
+<md-vuelidated>    <!-- becomes an <md-field> by default -->
   <label>Enter your email address</label>
   <md-input type="email" v-model.trim="mail" />
 </md-vuelidated>
@@ -146,9 +151,9 @@ Validating a date:
 ```
 
 
-#### Data nesting
+### Data nesting
 
-Simply use the nested path as the `v-model`, e.g.
+Just use the nested path as the `v-model`, e.g.
 
 ```html
 <md-vuelidated>
@@ -158,13 +163,13 @@ Simply use the nested path as the `v-model`, e.g.
 ```
 
 
-#### Collections validation with `v-for`
+### Collections validation with `v-for`
 
 `v-for` can be placed on `<md-vuelidated>` or on a parent element. In any case, `<md-vuelidated>`
 requires a `key` that is bound to the `v-for` index.
 
 Let's assume that `comments` is an array with elements like `{ text: 'blah' }` or an object with 
-such members. Then the input fields can be rendered and validated as follows:
+such members. Then an input field for each comment can be rendered and validated as follows:
 
 ```html
 <md-vuelidated v-for="(_, index) in comments" :key="index">
@@ -190,25 +195,25 @@ The `v-for` index _should_ be named `index`. In nested `v-for` blocks, indices _
 `index1`, `index2` etc.  
 
 
-### Providing validation messages
+## Providing validation messages
 
-Validation messages can be specified in two ways (both methods can be combined):
+Validation messages can be specified in two ways both of which can be combined:
 
-1.  As the `messages` property of `<md-vuelidated>`.
-    It must be bound to an object containing the message for each Vuelidate
-    constraint, e.g. `:messages="{ required: 'This field is required' }"`.
+1.  As the `messages` property of `<md-vuelidated>`, bound to an object containing
+    the message for each Vuelidate constraint, 
+    e.g. `:messages="{ required: 'This field is required' }"`.
     
-    Such messages appear below the corresponding input field.
+    These messages appear below the corresponding input field.
 
-1.  As `<md-vuelidated-msg>` elements, either inside `<md-vuelidated>` fields or independent.
-    Property `constraint` must be set to the Vuelidate constraint name. For independent messages,
+1.  As `<md-vuelidated-msg>` elements, either enclosed in `<md-vuelidated>` tags or detached.
+    Property `constraint` must be set to the Vuelidate constraint name. For detached messages,
     the constraint name must be qualified with the model name, see the
     [examples below](#independent-messages).
     
-    Field messages appear below the corresponding input field.  
+    Enclosed messages appear below the corresponding input field.  
 
 
-#### Field messages
+### Enclosed messages
 
 Using the `messages` property:
 
@@ -236,7 +241,7 @@ As `<md-vuelidated-msg>` tags:
 Both methods can be combined.
 
 
-#### Independent messages
+### Detached messages
 
 Messages outside of `<md-vuelidated>` blocks need their `constraint` property to be qualified 
 with the model name (often the collection name):
@@ -247,14 +252,14 @@ with the model name (often the collection name):
   <textarea v-model="comments[index].text"></textarea>
 </md-vuelidated>
 
-<!-- Independent message, referring to collection 'comments' -->
+<!-- Detached message, referring to collection 'comments' -->
 <md-vuelidated-msg constraint="comments.maxLength">Too many comments!</md-vuelidated-msg>
 ```
 
 
-#### Accessing validator parameters
+### Accessing validator parameters
 
-`v-slot` makes the validator parameters available to both field messages and independent messages:
+The parameters of the `constraint` validator are available as a `v-slot`:
 
 ```html
 <md-vuelidated-msg constraint="comments.maxLength" v-slot="params">

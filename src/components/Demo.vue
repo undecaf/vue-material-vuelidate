@@ -6,7 +6,7 @@
   >
     <md-app-toolbar class="md-primary md-dense md-layout md-alignment-center-space-between">
       <div class="md-layout-item md-title">
-        Testing &lt;md-vuelidate&gt;
+        &lt;md-vuelidate&gt; demo
       </div>
     </md-app-toolbar>
 
@@ -30,7 +30,7 @@
           <md-vuelidated
             field="md-field"
             class="md-layout-item"
-            :messages="{ maxLength: `More that ${$v.title.$params.maxLength.max} titles cause server overload`}"
+            :messages="{ maxLength: `More that ${$v.title.$params.maxLength.max} of these would cause server overload`}"
           >
             <label>Title</label>
             <md-select v-model.trim="title" multiple md-dense>
@@ -230,6 +230,11 @@
           <md-button class="md-raised" @click="reset">Reset</md-button>
           <md-button class="md-raised md-primary" :disabled="$v.$invalid" @click="submit">Register now!</md-button>
         </div>
+
+        <md-snackbar md-position="center" :md-duration="5000" :md-active.sync="showSnackbar" md-persistent>
+          <span>Registered!</span>
+          <md-button class="md-primary" @click="showSnackbar=false">Dismiss</md-button>
+        </md-snackbar>
       </form>
     </md-app-content>
   </md-app>
@@ -288,7 +293,9 @@ export default {
                 'Germany',
                 'Switzerland',
                 'United Kingdom',
-            ]
+            ],
+
+            showSnackbar: false,
         }
     },
 
@@ -333,6 +340,7 @@ export default {
         },
 
         submit() {
+            this.showSnackbar = true
             this.reset()
         },
     },

@@ -1,13 +1,14 @@
 {
   "name": "@undecaf/vue-material-vuelidate",
-  "version": "0.2.1",
-  "description": "A Vue Material adapter for Vuelidate",
+  "version": "0.2.2",
+  "description": "Using Vuelidate more easily with Vue Material",
   "keywords": [
     "vue",
     "material",
     "component",
     "vuelidate",
-    "validation"
+    "validation",
+    "simple"
   ],
   "author": "F. Kasper <fkasper@modus-operandi.at>",
   "license": "MIT",
@@ -25,7 +26,9 @@
   "scripts": {
     "prebuild": "rimraf dist/components.*",
     "build": "NODE_ENV=production rollup --config rollup.config.js",
-    "postbuild": "node terser.js dist/components.*.js",
+    "postbuild": "node terser.js dist/index.*.js",
+    "prebuild:example": "rimraf docs/example",
+    "build:example": "vue-cli-service build --dest docs/example",
     "serve": "vue-cli-service serve",
     "lint": "eslint '{src,tests}/**/*.{js,vue}'",
     "lint:fix": "npm run lint -- --fix",
