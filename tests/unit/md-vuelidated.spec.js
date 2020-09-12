@@ -4,7 +4,7 @@ import Vuelidate from 'vuelidate'
 import moment from 'moment'
 import { mount } from '@vue/test-utils'
 
-import MdVuelidated from '@/../dist/components.esm'
+import MdVuelidated from '@/..'
 // import MdVuelidated from '@/vue-material-vuelidate/md-vuelidated'
 import '@/../dist/components.css'
 import MdVuelidatedMock from './md-vuelidated.mock.vue'
