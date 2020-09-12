@@ -36,7 +36,7 @@ For example, an input field like this one ...
 </md-vuelidated>
 ```
 
-Here is [a more detailed example](https://undecaf.github.io/vue-material-vuelidate/example/)
+Here is [a more extensive online example](https://undecaf.github.io/vue-material-vuelidate/example/)
 ([source code](https://github.com/undecaf/vue-material-vuelidate/blob/master/src/components/Demo.vue))
 of how this package can be used.
 
