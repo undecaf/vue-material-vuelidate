@@ -1,6 +1,6 @@
 {
   "name": "@undecaf/vue-material-vuelidate",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Using Vuelidate more easily with Vue Material",
   "keywords": [
     "vue",
@@ -33,8 +33,7 @@
     "lint": "eslint '{src,tests}/**/*.{js,vue}'",
     "lint:fix": "npm run lint -- --fix",
     "test:unit": "karma start",
-    "test:unit:debug": "karma start --browsers Chromium --no-single-run",
-    "test:e2e": "testcafe"
+    "test:unit:debug": "karma start --browsers Chromium --no-single-run"
   },
   "dependencies": {},
   "devDependencies": {

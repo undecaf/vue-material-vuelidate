@@ -3,6 +3,7 @@
     :is="field"
     v-model="model.validation.$model"
     v-bind="$attrs"
+    class="md-vuelidated"
     :class="{ 'md-invalid': model.validation.$error }"
     v-on="$listeners"
     @focusout.native="touch()"
@@ -193,5 +194,10 @@ Please consider relaxing the policy to allow unsafe-eval.`)
 /* Shows the md-autocomplete menu in the foreground */
 .md-menu-content {
     z-index: 15 !important;
+}
+
+/* Shows only the first one of multiple error messages */
+.md-vuelidated span.md-error ~ span.md-error {
+    display: none !important;
 }
 </style>

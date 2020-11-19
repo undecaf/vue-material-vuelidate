@@ -212,6 +212,9 @@ Validation messages can be specified in two ways both of which can be combined:
     
     Enclosed messages appear below the corresponding input field.  
 
+If multiple validations fail at the same time then only the first one (in declaration order)
+displays a message.
+
 
 ### Enclosed messages
 
